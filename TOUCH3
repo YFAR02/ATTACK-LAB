@@ -1,0 +1,82 @@
+Dump of assembler code for function touch3:
+   0x0000000000401978 <+0>:     push   %rbx
+   0x0000000000401979 <+1>:     mov    %rdi,%rbx
+   0x000000000040197c <+4>:     movl   $0x3,0x202b76(%rip)        # 0x6044fc <vlevel>
+   0x0000000000401986 <+14>:    mov    %rdi,%rsi
+   0x0000000000401989 <+17>:    mov    0x202b75(%rip),%edi        # 0x604504 <cookie>
+   0x000000000040198f <+23>:    callq  0x4018f9 <hexmatch>
+   0x0000000000401994 <+28>:    test   %eax,%eax
+   0x0000000000401996 <+30>:    je     0x4019be <touch3+70>
+   0x0000000000401998 <+32>:    mov    %rbx,%rsi
+   0x000000000040199b <+35>:    mov    $0x403090,%edi
+   0x00000000004019a0 <+40>:    mov    $0x0,%eax
+   0x00000000004019a5 <+45>:    callq  0x400d00 <printf@plt>
+   0x00000000004019aa <+50>:    mov    $0x3,%edi
+   0x00000000004019af <+55>:    callq  0x401c8c <validate>
+   0x00000000004019b4 <+60>:    mov    $0x0,%edi
+   0x00000000004019b9 <+65>:    callq  0x400e40 <exit@plt>
+   0x00000000004019be <+70>:    mov    %rbx,%rsi
+   0x00000000004019c1 <+73>:    mov    $0x4030b8,%edi
+   0x00000000004019c6 <+78>:    mov    $0x0,%eax
+--Type <RET> for more, q to quit, c to continue without paging--
+   0x00000000004019cb <+83>:    callq  0x400d00 <printf@plt>
+   0x00000000004019d0 <+88>:    mov    $0x3,%edi
+   0x00000000004019d5 <+93>:    callq  0x401d3e <fail>
+   0x00000000004019da <+98>:    jmp    0x4019b4 <touch3+60>
+End of assembler dump.
+
+//I created a C file named touch3.c with the following code 
+#include <stdio.h>
+#include <stdlib.h>
+
+// Dummy fail function to simulate failure
+void fail() {
+  printf("Fail function called\n");
+  exit(1);
+}
+
+// Dummy validate function to simulate validation
+void validate(int level) {
+  printf("Validation passed with level %d\n", level);
+}
+
+// Dummy hexmatch function to simulate matching
+int hexmatch(int arg, int cookie) {
+  return (arg == cookie);
+}
+
+void touch3(int arg) {
+  // Simulated variable for vlevel
+  static int vlevel = 0;  // Static to mimic global-like behavior
+  vlevel = 3;  // Set vlevel to 3
+
+  // Simulated cookie value
+  static int cookie = 0x12345678;  // Replace with a known correct value
+
+  // Call hexmatch and check the result
+  int match = hexmatch(arg, cookie);
+
+  if (match) {
+    // If hexmatch returns non-zero
+    printf("Success: Argument %d matched\n", arg);
+    validate(3);
+    exit(0);
+  } else {
+    // If hexmatch returns zero
+    printf("Error: Argument %d did not match\n", arg);
+    fail();
+  }
+}
+
+int main() {
+  // Use a known valid value for testing
+  int test_value = 0x12345678;  // This should match the simulated cookie
+  touch3(test_value);
+  return 0;
+}
+//I then ran the code using 
+$ gcc -o touch3 touch3.c
+$ ./touch3
+Success: Argument 305419896 matched
+Validation passed with level 3
+
