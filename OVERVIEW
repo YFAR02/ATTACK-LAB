@@ -1,3 +1,7 @@
+A brief walkthrough of the buffer overflow attack known as Attack Lab or Buffer Bomb in Computer Systems course.
+
+There are 5 phases of the lab and your mission is to come up with a exploit strings that will enable you take control of the executable file and do as you wish.
+
 Dump of assembler code for function main:
    0x000000000040112f <+0>:     push   %r14
    0x0000000000401131 <+2>:     push   %r13
