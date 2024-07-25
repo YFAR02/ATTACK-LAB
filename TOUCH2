@@ -1,0 +1,65 @@
+Dump of assembler code for function touch2:
+   0x00000000004018a3 <+0>:     sub    $0x8,%rsp
+   0x00000000004018a7 <+4>:     mov    %edi,%esi
+   0x00000000004018a9 <+6>:     movl   $0x2,0x202c49(%rip)        # 0x6044fc <vlevel>
+   0x00000000004018b3 <+16>:    cmp    %edi,0x202c4b(%rip)        # 0x604504 <cookie>
+   0x00000000004018b9 <+22>:    je     0x4018de <touch2+59>
+   0x00000000004018bb <+24>:    mov    $0x403068,%edi
+   0x00000000004018c0 <+29>:    mov    $0x0,%eax
+   0x00000000004018c5 <+34>:    callq  0x400d00 <printf@plt>
+   0x00000000004018ca <+39>:    mov    $0x2,%edi
+   0x00000000004018cf <+44>:    callq  0x401d3e <fail>
+   0x00000000004018d4 <+49>:    mov    $0x0,%edi
+   0x00000000004018d9 <+54>:    callq  0x400e40 <exit@plt>
+   0x00000000004018de <+59>:    mov    $0x403040,%edi
+   0x00000000004018e3 <+64>:    mov    $0x0,%eax
+   0x00000000004018e8 <+69>:    callq  0x400d00 <printf@plt>
+   0x00000000004018ed <+74>:    mov    $0x2,%edi
+   0x00000000004018f2 <+79>:    callq  0x401c8c <validate>
+   0x00000000004018f7 <+84>:    jmp    0x4018d4 <touch2+49>
+End of assembler dump.
+
+
+//I created a C file with the code below (touch2.c) 
+#include <stdio.h>
+#include <stdlib.h>
+
+// Simulated cookie value for testing
+#define SIMULATED_COOKIE 0x12345678
+
+// Dummy fail function to simulate failure
+void fail() {
+  printf("Fail function called\n");
+  exit(1);
+}
+
+// Dummy validate function to simulate validation
+void validate(int level) {
+  printf("Validation passed with level %d\n", level);
+}
+
+void touch2(int arg) {
+  // Use a simulated cookie value instead of accessing a specific memory address
+  int simulated_cookie = SIMULATED_COOKIE;
+
+  if (arg == simulated_cookie) {
+    printf("Success: Correct argument %d\n", arg);
+    validate(2);
+  } else {
+    printf("Error: Incorrect argument %d\n", arg);
+    fail();
+  }
+}
+
+int main() {
+  // Use a known valid value for testing
+  int test_value = SIMULATED_COOKIE;  // This should match the simulated cookie value
+  touch2(test_value);
+  return 0;
+}
+
+I then ran the code using
+$ gcc -o touch2 touch2.c
+$ ./touch2
+Success: Correct argument 305419896
+Validation passed with level 2
